@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
+import time
 
 G=nx.dense_gnm_random_graph(10,20)
 
@@ -17,7 +18,7 @@ print(weight)
 plt.draw()
 plt.show()
 
-
+t0 = time.clock()
 def modify_djikstra(G, source, target):
     paths = list(nx.all_simple_paths(G, source=source, target=target))
     reliabilities = []
@@ -35,3 +36,7 @@ def modify_djikstra(G, source, target):
         del paths[index]
         del reliabilities[index]
     return path_sorted, reliabilities_sorted
+
+t1= time.clock()
+
+rroutingTime = t1-t0
