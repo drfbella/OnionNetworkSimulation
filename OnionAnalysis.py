@@ -75,7 +75,7 @@ def modify_djikstra(G, source, target):
 
 
 
-//Generates random network, can be changed to specific networks if need be
+#Generates random network, can be changed to specific networks if need be
 def Generate_Random_Network(nodes,edges,cost):
     G=nx.dense_gnm_random_graph(nodes,edges)
     for (u, v) in G.edges():
