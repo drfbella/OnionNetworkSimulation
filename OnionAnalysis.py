@@ -1,6 +1,7 @@
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
+import time
 import math
 
 """
@@ -72,6 +73,7 @@ def modify_djikstra(G, source, target):
 	return distance, prev
 
 
+
 G=nx.dense_gnm_random_graph(10,20)
 
 for (u, v) in G.edges():
@@ -90,3 +92,7 @@ print(rebuild_path(0, 5, d, p))
 plt.draw()
 plt.show()
 
+t0 = time.clock()
+t1= time.clock()
+
+rroutingTime = t1-t0
