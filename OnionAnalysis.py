@@ -7,7 +7,7 @@ G=nx.dense_gnm_random_graph(10,20)
 for (u, v) in G.edges():
     rand = random.randint(0,50)
     print(rand)
-    G.edge[u][v]['weight'] = rand
+    G[u][v]['weight'] = rand
 nx.draw_networkx(G)
 
 nx.draw_networkx(G)
