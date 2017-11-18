@@ -3,20 +3,15 @@ import matplotlib.pyplot as plt
 import random
 import time
 
-G=nx.dense_gnm_random_graph(10,20)
-
-for (u, v) in G.edges():
-    rand = random.randint(0,50)
-    print(rand)
-    G[u][v]['weight'] = rand
-nx.draw_networkx(G)
-
-nx.draw_networkx(G)
-weight=nx.get_edge_attributes(G,'weight')
-print(weight)
-
-plt.draw()
-plt.show()
+//Generates random network, can be changed to specific networks if need be
+def Generate_Random_Network(nodes,edges,cost):
+    G=nx.dense_gnm_random_graph(nodes,edges)
+    for (u, v) in G.edges():
+        rand = random.randint(0,cost)
+        G[u][v]['weight'] = rand
+    nx.draw_networkx(G)
+    plt.draw()
+    plt.show()
 
 t0 = time.clock()
 def modify_djikstra(G, source, target):
@@ -40,3 +35,5 @@ def modify_djikstra(G, source, target):
 t1= time.clock()
 
 rroutingTime = t1-t0
+
+Generate_Random_Network(10,20,40)
