@@ -60,19 +60,17 @@ def modify_djikstra(G, source, target):
 
 		vertex_pool.remove(current_min)
 
-		neighbours = G.edges(current_min)
+		neighbours = G.edges(current_min, data=True)
 
 		for neighbour in neighbours:
 			target = neighbour[1]
-			alt = distance[current_min] + G[u][v]['weight']
+			alt = distance[current_min] + neighbour[2]['weight']
 
 			if alt < distance[target]:
 				distance[target] = alt
 				prev[target] = current_min
 
 	return distance, prev
-
-
 
 G=nx.dense_gnm_random_graph(10,20)
 
@@ -86,7 +84,18 @@ nx.draw_networkx(G)
 weight=nx.get_edge_attributes(G,'weight')
 print(weight)
 
-d, p = modify_djikstra(G, 0, 3)
+
+#
+#	TESTING
+#
+
+# Run Djikstra and try to find the path between nodes 0 and 5
+
+d, p = modify_djikstra(G, 0, 5)
+
+# Rebuild the path using the Djikstra distance and previous vectors.
+# Prints the path, too.
+
 print(rebuild_path(0, 5, d, p))
 
 plt.draw()
