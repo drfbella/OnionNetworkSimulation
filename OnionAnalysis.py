@@ -4,11 +4,8 @@ import random
 import time
 import math
 
-
-class Message:
-    source = []
-    destination = []
-    message = ""
+from Message import Message
+from Network import Network
 
 """
 Rebuilds the path based on the distance and previous lists provided by Djikstra's.
@@ -74,28 +71,6 @@ def modify_djikstra(G, source, target):
 
 	return distance, prev
 
-def Generate_Random_Network(A,B,C):
-	#Generates random network, can be changed to specific networks if need be
-	G=nx.dense_gnm_random_graph(A,B)
-	for (u, v) in G.edges():
-			rand = random.randint(0,C)
-			G[u][v]['weight'] = rand
-
-	return G
-
-#
-#	TESTING
-#
-
-# Run Djikstra and try to find the path between nodes 0 and 5
-
-#d, p = modify_djikstra(G, 0, 5)
-
-# Rebuild the path using the Djikstra distance and previous vectors.
-# Prints the path, too.
-
-#print(rebuild_path(0, 5, d, p))
-
 #simulates layer encryption at sender, by appending randomly picked nodes to the destination stack
 def Onion_Encrypting(G,msg,numTargets):
     numNodes = nx.number_of_nodes(G)
@@ -124,7 +99,7 @@ def send(G,msg):
     print(msg.message)
     
 
-def Onion_Simulation():
+def Onion_Simulation(network):
     
     #Creates message object
     msg = Message()
@@ -132,16 +107,27 @@ def Onion_Simulation():
     msg.destination.append(10)
     msg.message = "My Name is Daniel"
     
+    msg = Onion_Encrypting(network, msg, 3)
     
-    G= Generate_Random_Network(210,450,40)
-    
-    msg = Onion_Encrypting(G,msg,3)
-    
-    send(G,msg)
+    send(network, msg)
     
 
+"""
+Main runtime, executed if OnionAnalysis.py is run directly.
+"""
 
-Onion_Simulation()
+if __name__ == "__main__":
+
+	#Created a simulated network.
+	simulated_network = Network(210, 40)
+
+	#Run the Onion simulation.
+	Onion_Simulation(simulated_network.graph)
+
+	#Draw the network for visual inspection.
+	simulated_network.draw_network()
+
+#TODO: Flagged for deletion
 """
 
 N0 = random.randint(0,70)
