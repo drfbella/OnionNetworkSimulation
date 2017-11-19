@@ -4,6 +4,12 @@ import random
 import time
 import math
 
+
+class Message:
+    source = []
+    destination = []
+    message = ""
+
 """
 Rebuilds the path based on the distance and previous lists provided by Djikstra's.
 @param source ID of the node from which to start the pathing.
@@ -90,9 +96,53 @@ def Generate_Random_Network(A,B,C):
 
 #print(rebuild_path(0, 5, d, p))
 
+#simulates layer encryption at sender, by appending randomly picked nodes to the destination stack
+def Onion_Encrypting(G,msg,numTargets):
+    numNodes = nx.number_of_nodes(G)
+    sect = numNodes/numTargets
+    
+    for i in range(1,numTargets):
+        msg.destination.append((i-1)*sect +random.randint(0,sect))
+    print(msg.destination)
+    return msg
 
-G= Generate_Random_Network(210,450,40)
+#simulates per-router decryption
+def Onion_Decrypting(msg):
+    dest = msg.destination.pop()
+    msg.source.append(dest)
+    return dest
 
+#simulates message transmission on network
+def send(G,msg):
+    while (msg.destination):
+        source = msg.source[-1]
+        dest = Onion_Decrypting(msg)
+        print("On this hop, my source is node ",source,"and destination ", dest)
+        modify_djikstra(G, source, dest)
+    print(msg.destination)
+    print(msg.source)
+    print(msg.message)
+    
+
+def Onion_Simulation():
+    
+    #Creates message object
+    msg = Message()
+    msg.source.append(1)
+    msg.destination.append(10)
+    msg.message = "My Name is Daniel"
+    
+    
+    G= Generate_Random_Network(210,450,40)
+    
+    msg = Onion_Encrypting(G,msg,3)
+    
+    send(G,msg)
+    
+
+
+Onion_Simulation()
+"""
 
 N0 = random.randint(0,70)
 N1 = random.randint(71, 140)
@@ -134,5 +184,5 @@ nx.draw_networkx(G)#
 plt.draw()
 plt.show()
 
-
+"""
 
