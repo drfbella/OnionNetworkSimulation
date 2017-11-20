@@ -73,44 +73,42 @@ def modify_djikstra(G, source, target):
 
 #simulates layer encryption at sender, by appending randomly picked nodes to the destination stack
 def Onion_Encrypting(G,msg,numTargets):
-    numNodes = nx.number_of_nodes(G)
-    sect = numNodes/numTargets
-    
-    for i in range(1,numTargets):
-        msg.destination.append((i-1)*sect +random.randint(0,sect))
-    print(msg.destination)
-    return msg
+		numNodes = nx.number_of_nodes(G)
+		sect = numNodes/numTargets
+		
+		for i in range(1,numTargets):
+				msg.destination.append((i-1)*sect +random.randint(0,sect))
+		print(msg.destination)
+		return msg
 
 #simulates per-router decryption
 def Onion_Decrypting(msg):
-    dest = msg.destination.pop()
-    msg.source.append(dest)
-    return dest
+		dest = msg.destination.pop()
+		msg.source.append(dest)
+		return dest
 
 #simulates message transmission on network
 def send(G,msg):
-    while (msg.destination):
-        source = msg.source[-1]
-        dest = Onion_Decrypting(msg)
-        print("On this hop, my source is node ",source,"and destination ", dest)
-        modify_djikstra(G, source, dest)
-    print(msg.destination)
-    print(msg.source)
-    print(msg.message)
-    
+	while (msg.destination):
+			source = msg.source[-1]
+			dest = Onion_Decrypting(msg)
+			print("On this hop, my source is node ",source,"and destination ", dest)
+			modify_djikstra(G, source, dest)
+	print(msg.destination)
+	print(msg.source)
+	print(msg.message)
+		
 
 def Onion_Simulation(network):
-    
-    #Creates message object
-    msg = Message()
-    msg.source.append(1)
-    msg.destination.append(10)
-    msg.message = "My Name is Daniel"
-    
-    msg = Onion_Encrypting(network, msg, 3)
-    
-    send(network, msg)
-    
+	
+	#Creates message object
+	msg = Message()
+	msg.source.append(".".join(list(map(str,network.clients[0]))))
+	msg.destination.append(".".join(list(map(str,network.clients[-1]))))
+	msg.message = "My Name is Daniel"
+	
+	msg = Onion_Encrypting(network.graph, msg, 3)
+	send(network.graph, msg)
 
 """
 Main runtime, executed if OnionAnalysis.py is run directly.
@@ -122,53 +120,16 @@ if __name__ == "__main__":
 	simulated_network = Network(210, 40)
 
 	#Run the Onion simulation.
-	Onion_Simulation(simulated_network.graph)
+	#Onion_Simulation(simulated_network)
+	source, target =".".join(list(map(str,simulated_network.clients[0]))), ".".join(list(map(str,simulated_network.clients[-1])))
+	d, p = modify_djikstra(simulated_network.graph, ".".join(list(map(str,simulated_network.clients[0]))), ".".join(list(map(str,simulated_network.clients[-1]))))
+	path = rebuild_path(".".join(list(map(str,simulated_network.clients[0]))), ".".join(list(map(str,simulated_network.clients[-1]))), d, p)
 
+	print(d[target])
+	source, target =".".join(list(map(str,simulated_network.clients[-1]))), ".".join(list(map(str,simulated_network.clients[25])))
+	d, p = modify_djikstra(simulated_network.graph, ".".join(list(map(str,simulated_network.clients[-1]))), ".".join(list(map(str,simulated_network.clients[25]))))
+	path += rebuild_path(".".join(list(map(str,simulated_network.clients[-1]))), ".".join(list(map(str,simulated_network.clients[25]))), d, p)
+
+	print(d[target])
 	#Draw the network for visual inspection.
-	simulated_network.draw_network()
-
-#TODO: Flagged for deletion
-"""
-
-N0 = random.randint(0,70)
-N1 = random.randint(71, 140)
-N2 = random.randint(141, 210)
-
-t0 = time.clock()
-distance, prev = modify_djikstra(G, 1, 92)
-path = rebuild_path(1, 92, distance, prev)
-print(path)
-t1= time.clock()
-
-
-distance, prev = modify_djikstra(G, 1, N0)
-path = rebuild_path(1, N0, distance, prev)
-print(path)
-
-distance, prev = modify_djikstra(G, N0, N1)
-path = rebuild_path(N0, N1, distance, prev)
-print(path)
-
-distance, prev = modify_djikstra(G, N1, N2)
-path = rebuild_path(N1, N2, distance, prev)
-print(path)
-
-distance, prev = modify_djikstra(G, N2, 92)
-path = rebuild_path(N2, 92, distance, prev)
-print(path)
-
-t2= time.clock()
-
-#Encryption takes 0.08ms/operation. Decryption takes 1.46ms/operation
-
-normalRouting = t1-t0
-print(normalRouting)
-onionRouting = t2-t1
-print(onionRouting)
-
-nx.draw_networkx(G)#
-plt.draw()
-plt.show()
-
-"""
-
+	simulated_network.draw_network(path)
