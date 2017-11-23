@@ -66,10 +66,8 @@ class Network():
 
     for client in self.clients:
       network.add_edge("{}.{}.{}.0".format(client[0], client[1], client[2]), ".".join(list(map(str,client))), weight=0.9)
-        
 
-    return network
-    
+    return network    
 
   def allocate_ip(self, mask):
     ip_candidate = list(mask)
@@ -102,6 +100,7 @@ class Network():
       else:
         edge_colour.append("black")
 
-    nx.draw_spring(self.graph, node_color = node_colour, edge_color = edge_colour, with_labels=True)
+    node_position = nx.spring_layout(self.graph, k=0.15)
+    nx.draw(self.graph, node_position, node_color=node_colour, edge_color=edge_colour, with_labels=True, node_size=100, font_size=10, k=0.15)
     plt.draw()
     plt.show()

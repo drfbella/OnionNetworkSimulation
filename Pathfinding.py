@@ -12,6 +12,7 @@ def find_onion_path(network, source, target, hops=3):
 
   Note: Nodes on the same route may share a top- or mid-tier node.
   """
+  print("\nFINDING ONION PATH USING DIJSKTRA'S SHORTEST PATH.\n")
 
   selected_low_tier = list()
 
@@ -36,7 +37,15 @@ def find_onion_path(network, source, target, hops=3):
     path = rebuild_path(selected_clients[iteration], selected_clients[iteration+1], dist, prev)
     onion_path += path
 
-  return onion_path
+  cleaned_path = list()
+
+  for node in onion_path:
+    if not cleaned_path or cleaned_path[-1] != node:
+      cleaned_path.append(node)
+
+  print("\nPATH ESTABLISHED BETWEEN {} and {} HAS {} BOUNCES.\n".format(source, target, len(cleaned_path)-2))
+
+  return cleaned_path
 
 
 """
